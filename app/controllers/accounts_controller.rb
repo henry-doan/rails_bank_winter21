@@ -30,13 +30,23 @@ class AccountsController < ApplicationController
   end
 
   def edit
+    render component: 'AccountEdit', props: { user: current_user, account: @account }
   end
 
   def update 
+    if @account.update(account_params)
+      flash[:success] = "Account: #{@account.name} update"
+      redirect_to root_path
+    else
+      flash[:error] = "Error #{@account.errors.full_messages.join("\n")}"
+      render component: 'AccountEdit', props: { user: current_user, account: @account }
+    end
   end
 
   def destroy
-
+    @account.destroy
+    redirect_to root_path
+    flash[:success] = "Account deleted"
   end
 
   private 
